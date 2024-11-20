@@ -32,18 +32,17 @@ const css = {
   <footer class="flex items-center justify-center bg-zinc-900 text-white bg-opacity-75 py-12">
     <div class="container grid grid-cols-6 gap-6">
       <div class="col-span-2 flex flex-col gap-6">
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
           <img
-            src="/pics/logo_light.svg"
+            src="/pics/logo.png"
             :class="css.logo"
           />
-          <p class="font-mono text-lg font-bold">Nurdaulet Kumarbekov</p>
+          <p class="font-mono text-lg font-bold">Talk&Call</p>
         </div>
         <p class="text-xs">
-          This site was created to show you my
-          skills in in web development. Main
-          technologies: react, vue, nodejs. In
-          this section you can connect with me!
+          This site was created to help you make
+          connect with customers and leadvertex.
+          Hope you enjoy it.
         </p>
         <div class="flex items-center gap-3">
           <Icon icon="fa-brands fa-instagram" :class="css.icon" />
@@ -112,7 +111,7 @@ const css = {
       </div>
       <div class="col-span-6 border-b"></div>
       <div class="col-span-2">
-        <p class="text-xs">Copyright © 2024 Kumarbekov Inc. All rights not reserved.</p>
+        <p class="text-xs">Copyright © 2024 Talk&Call. All rights reserved.</p>
       </div>
       <div class="col-span-3 text-xs">
         <div class="flex items-center gap-6">

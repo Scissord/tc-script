@@ -1,16 +1,9 @@
-<script setup>
-import Hello from './blocks/Hello.vue';
-import React from './blocks/React.vue';
-import Vue from './blocks/Vue.vue';
-import Node from './blocks/Node.vue';
+<script>
+
 </script>
 
 <template>
-  <Hello/>
-  <Node/>
-  <React/>
-  <Vue/>
+  <div class="h-[50vh] flex items-center justify-center">
+    <p class="font-bold text-2xl">This site was created to help managers connect with customers</p>
+  </div>
 </template>
-
-<style scoped>
-</style>

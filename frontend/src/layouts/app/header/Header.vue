@@ -1,11 +1,14 @@
 <script setup>
-import { useThemeStore } from "@store";
+import { useUserStore, useThemeStore } from "@store";
+import { useRouter } from "vue-router";
 
+const user = useUserStore();
 const theme = useThemeStore();
+const router = useRouter();
 
 const css = {
   header: `
-    sticky top-0 w-full
+    sticky top-0 w-full z-30
     h-[6vh] flex items-center
     justify-center bg-zinc-900
     text-white bg-opacity-75
@@ -16,12 +19,11 @@ const css = {
     justify-between
   `,
   logo: `
-    w-6 cursor-pointer
+    w-10 cursor-pointer
   `,
   nav: `
     flex items-center
-    justify-around
-    gap-8 text-sm
+    gap-8 text-sm w-full
   `,
   link: `
     hover:text-neutral-200
@@ -36,43 +38,15 @@ const css = {
   <header :class="css.header">
     <div :class="css.container">
       <nav :class="css.nav">
-        <router-link
-          to="/"
-        >
-          <img
-            src="/pics/logo_light.svg"
-            :class="css.logo"
-          />
-        </router-link>
-        <router-link
-          to="/auth"
-          :class="css.link"
-        >
-          Auth
-        </router-link>
+        <img
+          src="/pics/logo.png"
+          :class="css.logo"
+        />
         <router-link
           to="/script"
           :class="css.link"
         >
-          Script
-        </router-link>
-        <router-link
-          to="/shop"
-          :class="css.link"
-        >
-          Shop
-        </router-link>
-        <router-link
-          to="/kanban"
-          :class="css.link"
-        >
-          Kanban
-        </router-link>
-        <router-link
-          to="/chat"
-          :class="css.link"
-        >
-          Chat
+          Скрипт
         </router-link>
         <Icon
           icon="fa-solid fa-language"
@@ -82,6 +56,12 @@ const css = {
           :icon="theme.theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun'"
           :class="css.link"
           @click="theme.toggleTheme"
+        />
+        <Icon
+          v-if="!user.isAuthenticated"
+          icon="fa-solid fa-circle-user"
+          :class="css.link"
+          @click='router.push("/auth")'
         />
       </nav>
     </div>
