@@ -15,7 +15,7 @@ defineProps({
 
 <template>
   <div class="w-2/3 h-full border rounded-lg p-5 transition-all ease-in-out duration-300 overflow-y-auto flex flex-col text-black text-sm">
-    <h1 class="font-bold text-2xl">Скрипт холодного звонка, по товару ManBalance</h1>
+    <h1 class="font-bold text-2xl animate-slideIn">Скрипт холодного звонка, по товару ManBalance</h1>
     <Hello v-if="tab === 1"/>
     <Needs v-if="tab === 2"/>
     <Presentation v-if="tab === 3"/>
