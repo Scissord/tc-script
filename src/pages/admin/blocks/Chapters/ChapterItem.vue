@@ -67,7 +67,8 @@ const props = defineProps({
   >
     <p
       :class="[
-        'whitespace-nowrap p-2 rounded-lg transition-colors duration-300 ease-in-out cursor-pointer overflow-hidden text-sm select-none hover:bg-gray-200',
+        'whitespace-nowrap p-2 rounded-lg transition-colors duration-300 ease-in-out cursor-pointer overflow-hidden text-sm select-none hover:bg-gray-200 h-8 flex items-center',
+        text.content ? '' : 'border border-slate-200'
       ]"
       @click="handleChangeScript(text)"
     >

@@ -32,6 +32,7 @@ const useChaptersApi = () => {
           department_id: userStore.data.department_id
         }
       });
+      notification.show('Раздел успешно создан!', 'success');
 
       return response.data;
     } catch (err) {
@@ -50,6 +51,7 @@ const useChaptersApi = () => {
           name,
         }
       });
+      notification.show('Раздел успешно обновлён!', 'success');
 
       return response.data;
     } catch (err) {
@@ -68,6 +70,7 @@ const useChaptersApi = () => {
           department_id: userStore.data.department_id
         }
       });
+      notification.show('Раздел успешно удалён!', 'success');
 
       return response.data;
     } catch (err) {

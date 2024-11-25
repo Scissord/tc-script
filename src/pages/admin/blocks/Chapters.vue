@@ -1,7 +1,7 @@
 <script setup>
 import { watch } from 'vue';
 import { Select } from '@components';
-import ChapterItem from './ChapterItem.vue';
+import ChapterItem from './Chapters/ChapterItem.vue';
 
 const props = defineProps({
   good: Object,

@@ -3,7 +3,7 @@ import vSelect from "vue-select";
 import 'vue-select/dist/vue-select.css';
 
 const props = defineProps({
-  value: [String, Number],
+  value: [null, String, Number, Object],
   onChange: Function,
   placeholder: String,
   options: {
@@ -12,6 +12,7 @@ const props = defineProps({
   },
   label: String,
   multiple: Boolean,
+  className: String
 });
 
 </script>
@@ -24,7 +25,7 @@ const props = defineProps({
     :label="label ? label : 'label'"
     :placeholder="placeholder ? placeholder : 'Select'"
     :multiple="multiple"
-    class="min-w-[100px]"
+    :class="['min-w-[200px]', className]"
   />
 </template>
 
@@ -74,7 +75,7 @@ const props = defineProps({
   /* Dropdown */
   --vs-dropdown-bg: #fff;
   --vs-dropdown-color: inherit;
-  --vs-dropdown-z-index: 1;
+  --vs-dropdown-z-index: 10;
   --vs-dropdown-min-width: 160px;
   --vs-dropdown-max-height: 350px;
   --vs-dropdown-box-shadow: 0px 3px 6px 0px var(--vs-colors--darkest);

@@ -1,10 +1,11 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
-import { useGoods, useChapters, useTexts } from '@hooks';
-import { useNotificationStore } from '@store'
+import { ref, toRaw, reactive, computed, watch, onMounted } from 'vue';
+import { useGoods, useChapters, useTexts, useAnswers } from '@hooks';
+import { useUserStore, useNotificationStore } from '@store'
 import Chapters from './blocks/Chapters.vue';
 import Script from './blocks/Script.vue';
 
+const userStore = useUserStore();
 const notification = useNotificationStore();
 
 const {
@@ -20,15 +21,27 @@ const {
 } = useChapters();
 
 const {
-  handleCreateText
+  handleGetTexts,
+  handleCreateTextName,
+  handleUpdateTextName,
+  handleDeleteText
 } = useTexts();
+
+const {
+  handleCreateAnswer,
+  handleUpdateAnswer,
+  handleDeleteAnswer
+} = useAnswers();
 
 const good = reactive({});
 const goods = reactive([]);
-const script = reactive([]);
 
 const chapters = reactive([]);
-// const currentChapterId = ref(null);
+const texts = reactive([]);
+
+const script = reactive([]);
+
+const isScriptEditable = ref(false);
 
 const handleChangeGood = async (val) => {
   good.id = val.id
@@ -39,20 +52,31 @@ const handleChangeGood = async (val) => {
 };
 
 const handleChangeScript = async (val) => {
-  // currentChapterId.value = val.chapter_id;
-  const data = await handleGetScript(val.id);
-  script.splice(0, script.length, ...data);
-};
-
-const handleChangeScriptByButton = async (val) => {
-  // here i need to get next_chapter_id from buttons
-  // currentChapterId.value = val.next;
-  const data = await handleGetScript(val.next_text_id);
-  script.splice(0, script.length, ...data);
+  if(val.id) {
+    const data = await handleGetScript(val.id);
+    script.splice(0, script.length, ...data);
+    isScriptEditable.value = false;
+  } else {
+    script.splice(0, script.length, val);
+    isScriptEditable.value = true;
+    // script.id = val.id;
+    // script.chapter_id = val.chapter_id;
+    // script.content = val.content;
+    // script.department_id = val.department_id;
+    // script.good_id = val.good_id;
+    // script.queue_order = val.queue_order;
+    // script.answers = [];
+  }
 };
 
 const handleAddChapter = () => {
   if(!good.id) return notification.show('Выберите продукт!', 'error');
+  for(const chapter of chapters) {
+    if(!chapter.id) {
+      notification.show('Завершите создание предыдущего раздела!', 'error')
+      return;
+    }
+  }
   chapters.unshift({
     id: null,
     name: null,
@@ -80,8 +104,6 @@ const handleSaveChapterName = async (chapter) => {
   } else {
     data = await handleUpdateChapter(chapter.id, chapter.name);
   }
-
-  notification.show('Раздел успешно создан!', 'success');
 }
 
 const handleDestroyChapter = async (chapter_id) => {
@@ -105,8 +127,137 @@ const handleDestroyChapter = async (chapter_id) => {
 };
 
 const handleAddText = async (chapter_id) => {
-  const data = await handleCreateText(chapter_id);
+  // const data = await handleCreateText(chapter_id);
+  const currentChapter = chapters.find((c) => c.id === chapter_id);
 
+  // validate should be in service;
+  for(const chapter of chapters) {
+    for(const text of chapter.texts) {
+      if(!text.id) {
+        notification.show('Завершите создание предыдущего подраздела!', 'error')
+        return;
+      };
+    };
+  };
+
+  currentChapter.texts.push({
+    id: null,
+    chapter_id,
+    content: "",
+    department_id: userStore.data.department_id,
+    good_id: good.id,
+    queue_order: currentChapter.texts.length + 1,
+    answers: []
+  });
+};
+
+const handleChangeEditor = async () => {
+  isScriptEditable.value = !isScriptEditable.value;
+  const data = await handleGetTexts(good.id);
+  texts.splice(0, texts.length,...data);
+};
+
+const handleSaveTextName = async (val) => {
+  let data;
+
+  if (!val.id) {
+    data = await handleCreateTextName({
+      department_id: val.department_id,
+      content: val.content,
+      queue_order: val.queue_order,
+      good_id: val.good_id,
+      chapter_id: val.chapter_id
+    });
+  } else {
+    data = await handleUpdateTextName({
+      id: val.id,
+      content: val.content,
+      department_id: val.department_id,
+      queue_order: val.queue_order,
+      good_id: val.good_id,
+      chapter_id: val.chapter_id
+    });
+
+    data.answers = val.answers;
+  }
+
+  const currentChapter = chapters.find((c) => c.id === val.chapter_id);
+
+  if (currentChapter) {
+    const textIndex = currentChapter.texts.findIndex((text) => text.id === val.id);
+
+    if (textIndex !== -1) {
+      currentChapter.texts[textIndex] = data;
+    } else {
+      currentChapter.texts.push(data);
+    }
+  }
+  script.splice(0, script.length, data);
+  isScriptEditable.value = false;
+};
+
+const handleDestroyText = async (val) => {
+  if(val.id) await handleDeleteText(val.id);
+  const currentChapter = chapters.find((c) => c.id === val.chapter_id);
+  if (currentChapter) {
+    const textIndex = currentChapter.texts.findIndex((text) => text.id === val.id);
+
+    if (textIndex !== -1) {
+      currentChapter.texts.splice(textIndex, 1);
+    }
+  }
+  script.splice(0, script.length);
+  isScriptEditable.value = false;
+};
+
+const handleChangeButtonWay = (index, val) => {
+  script[0].answers[index].next_text_id = val.id
+};
+
+const handlePressAnswer = async (val) => {
+  if(!val.next_text_id) return notification.show('Укажите куда, должен вести ответ', 'error');
+  const data = await handleGetScript(val.next_text_id);
+  script.splice(0, script.length, ...data);
+};
+
+const handleAddAnswer = () => {
+  const existingAnswer = script[0].answers.find(answer => answer.id === null);
+  if (existingAnswer) return notification.show('Закончите редактировать предыдущий ответ!', 'error');
+
+  script[0].answers.push({
+    id: null,
+    content: "",
+    next_text_id: null,
+    text_id: null
+  });
+};
+
+const handleSaveAnswer = async (answer) => {
+  let data = {};
+  if(!answer.id) {
+    data = await handleCreateAnswer({
+      content: answer.content,
+      next_text_id: answer.next_text_id,
+      text_id: script[0].id
+    });
+  } else {
+    data = await handleUpdateAnswer(answer.id, {
+      content: answer.content,
+      next_text_id: answer.next_text_id,
+      text_id: answer.text_id
+    });
+  }
+
+  script[0].answers.pop();
+  script[0].answers.push(data);
+};
+
+const handleDestroyAnswer = async (answer) => {
+  if(answer.id) {
+    await handleDeleteAnswer(answer.id);
+  }
+
+  script[0].answers = script[0].answers.filter((a) => a.id !== answer.id);
 };
 
 onMounted(async () => {
@@ -114,7 +265,7 @@ onMounted(async () => {
   goods.splice(0, goods.length, ...data);
 })
 
-// watch(() => chapters, (newVal, oldVal) => {
+// watch(() => script, (newVal, oldVal) => {
 //   console.log("newVal", newVal);
 //   console.log("oldVal", oldVal);
 // }, { deep: true });
@@ -138,8 +289,17 @@ onMounted(async () => {
 
     <Script
       :script="script"
+      :texts="texts"
+      :isScriptEditable="isScriptEditable"
+      :handleChangeEditor="handleChangeEditor"
       :chapters="chapters"
-      :handleChangeScriptByButton="handleChangeScriptByButton"
+      :handleSaveTextName="handleSaveTextName"
+      :handleAddAnswer="handleAddAnswer"
+      :handleChangeButtonWay="handleChangeButtonWay"
+      :handlePressAnswer="handlePressAnswer"
+      :handleDestroyText="handleDestroyText"
+      :handleSaveAnswer="handleSaveAnswer"
+      :handleDestroyAnswer="handleDestroyAnswer"
     />
   </div>
 </template>

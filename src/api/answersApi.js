@@ -2,38 +2,20 @@ import axios from 'axios';
 import { baseUrl } from '@utils';
 import { useNotificationStore, useUserStore } from '@store';
 
-const useTextsApi = () => {
+const useAnswersApi = () => {
   const userStore = useUserStore();
   const notification = useNotificationStore();
 
-  const getTexts = async (good_id) => {
-    try {
-      const response = await axios({
-        method: 'GET',
-        url: `${baseUrl}/get_text_list/${good_id}`,
-        headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
-        withCredentials: true,
-        data: {
-          department_id: userStore.data.department_id
-        }
-      })
-
-      return response.data;
-    } catch (err) {
-      handleError(err.message);
-    }
-  };
-
-  const createTextName = async (data) => {
+  const createAnswer = async (data) => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `${baseUrl}/create_script_text`,
+        url: `${baseUrl}/create_answer`,
         headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
         withCredentials: true,
         data
       })
-      notification.show('Подраздел успешно создан!', 'success');
+      notification.show('Ответ успешно создан!', 'success');
 
       return response.data;
     } catch (err) {
@@ -41,16 +23,16 @@ const useTextsApi = () => {
     }
   };
 
-  const updateTextName = async (id, data) => {
+  const updateAnswer = async (id, data) => {
     try {
       const response = await axios({
         method: 'PATCH',
-        url: `${baseUrl}/update_script_text/${id}`,
+        url: `${baseUrl}/update_answer/${id}`,
         headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
         withCredentials: true,
         data
       })
-      notification.show('Подраздел успешно обновлен!', 'success');
+      notification.show('Ответ успешно обновлен!', 'success');
 
       return response.data;
     } catch (err) {
@@ -58,33 +40,30 @@ const useTextsApi = () => {
     }
   };
 
-  const deleteText = async (id) => {
+  const deleteAnswer = async (id) => {
     try {
       const response = await axios({
         method: 'DELETE',
-        url: `${baseUrl}/delete_script_text/${id}`,
+        url: `${baseUrl}/delete_answer/${id}`,
         headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
         withCredentials: true,
       })
-      notification.show('Подраздел успешно удалён!', 'success');
+      notification.show('Ответ успешно удалён!', 'success');
 
       return response.data;
     } catch (err) {
       handleError(err.message);
     }
   };
-
 
   const handleError = (error) => {
     notification.show(error || 'Что-то пошло не так!', 'error');
   };
 
   return {
-    getTexts,
-    createTextName,
-    updateTextName,
-    deleteText
+    createAnswer, updateAnswer,
+    deleteAnswer
   };
 };
 
-export default useTextsApi;
+export default useAnswersApi;

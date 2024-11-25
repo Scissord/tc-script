@@ -39,7 +39,8 @@ console.log(currentGroup.value);
     <div class="flex flex-col gap-3">
       <p class="font-bold text-2xl">{{ currentGroup.text }}</p>
       <div
-        v-for="answer in currentGroup.answers"
+        v-for="(answer, index) in currentGroup.answers"
+        :index
       >
         <Button
           text="Close"
