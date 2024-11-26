@@ -47,8 +47,10 @@ const handleChangeGood = async (val) => {
   good.id = val.id
   good.good_id = val.good_id;
   good.good_name = val.good_name;
-  const data = await handleGetChapters(val.id);
-  chapters.splice(0, chapters.length, ...data);
+  const chaptersData = await handleGetChapters(val.id);
+  chapters.splice(0, chapters.length, ...chaptersData);
+  const textsData = await handleGetTexts(val.id);
+  texts.splice(0, texts.length, ...textsData);
 };
 
 const handleChangeScript = async (val) => {
@@ -153,8 +155,6 @@ const handleAddText = async (chapter_id) => {
 
 const handleChangeEditor = async () => {
   isScriptEditable.value = !isScriptEditable.value;
-  const data = await handleGetTexts(good.id);
-  texts.splice(0, texts.length,...data);
 };
 
 const handleSaveTextName = async (val) => {
@@ -247,9 +247,6 @@ const handleSaveAnswer = async (answer) => {
       text_id: answer.text_id
     });
   }
-
-  script[0].answers.pop();
-  script[0].answers.push(data);
 };
 
 const handleDestroyAnswer = async (answer) => {
@@ -261,11 +258,11 @@ const handleDestroyAnswer = async (answer) => {
 };
 
 onMounted(async () => {
-  const data = await handleGetGoods();
-  goods.splice(0, goods.length, ...data);
+  const goodsData = await handleGetGoods();
+  goods.splice(0, goods.length, ...goodsData);
 })
 
-// watch(() => script, (newVal, oldVal) => {
+// watch(() => texts, (newVal, oldVal) => {
 //   console.log("newVal", newVal);
 //   console.log("oldVal", oldVal);
 // }, { deep: true });

@@ -13,9 +13,6 @@ const useTextsApi = () => {
         url: `${baseUrl}/get_text_list/${good_id}`,
         headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
         withCredentials: true,
-        data: {
-          department_id: userStore.data.department_id
-        }
       })
 
       return response.data;

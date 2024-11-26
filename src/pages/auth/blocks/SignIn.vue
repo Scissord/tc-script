@@ -4,14 +4,12 @@ import { Button, Input } from '@components';
 import { useRouter } from 'vue-router';
 const props = defineProps({
   handleSignIn: { type: Function },
-  handleChangeMode: { type: Function }
 })
 
 const router = useRouter();
 
 const login = ref('');
 const password = ref('');
-
 </script>
 
 <template>

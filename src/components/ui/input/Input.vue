@@ -11,7 +11,7 @@ defineProps({
     default: 'text'
   },
   modelValue: {
-    type: String,
+    type: [String, Number, null],
     required: true
   },
   placeholder: {

@@ -1,5 +1,4 @@
 <script setup>
-import { watch } from 'vue';
 import { Select } from '@components';
 import ChapterItem from './Chapters/ChapterItem.vue';
 

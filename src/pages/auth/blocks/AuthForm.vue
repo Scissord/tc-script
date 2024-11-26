@@ -15,7 +15,6 @@ const {
         <video src="/video/auth.mp4" muted autoplay loop/>
       </div>
       <SignIn
-        :handleChangeMode="handleChangeMode"
         :handleSignIn="handleSignIn"
       />
     </div>

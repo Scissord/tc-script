@@ -1,5 +1,8 @@
 <script setup>
-import { Input, Button, Select } from '@components';
+import { Input, Button } from '@components';
+import vSelect from "vue-select";
+import 'vue-select/dist/vue-select.css';
+
 const props = defineProps({
   script: Array,
   texts: Array,
@@ -49,13 +52,13 @@ const props = defineProps({
         placeholder="Название ответа..."
         className="text-md w-[200px]"
       />
-      <Select
-        :value="answer.next_text_id"
-        :options="texts"
-        :onChange="(val) => handleChangeButtonWay(index, val)"
-        placeholder="Куда..."
-        className="min-w-[300px]"
+      <vSelect
         label="content"
+        v-model="answer.next_text_id"
+        :reduce="(option) => option.id"
+        :options="texts"
+        placeholder="Куда..."
+        class="min-w-[300px]"
       />
     </div>
     <div
