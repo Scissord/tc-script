@@ -1,5 +1,6 @@
 <script setup>
 defineProps({
+  script: Array,
   chapters: Array,
   handleOpenChapter: Function,
   handleTextPress: Function
@@ -28,7 +29,8 @@ defineProps({
         <p
           :class="[
             'whitespace-nowrap px-4 py-2 rounded-lg transition-colors duration-300 ease-in-out cursor-pointer overflow-hidden text-sm select-none hover:bg-gray-200 h-10 flex items-center',
-            text.content ? '' : 'border border-slate-200'
+            script[0].id === text.id ? 'bg-gray-300' : '',
+
           ]"
           @click="handleTextPress(text)"
         >

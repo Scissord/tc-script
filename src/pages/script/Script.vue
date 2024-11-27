@@ -103,6 +103,7 @@ const handlePressAnswer = async (val) => {
           :order_id="order_id"
           :isOrderLoading="isOrderLoading"
           :handleSaveOrder="handleSaveOrder"
+          :script="script"
           :chapters="chapters"
           :isChaptersLoading="isChaptersLoading"
           :handleOpenChapter="handleOpenChapter"

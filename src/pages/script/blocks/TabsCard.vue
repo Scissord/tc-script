@@ -9,6 +9,7 @@ defineProps({
   order_id: [String, Number],
   isOrderLoading: Boolean,
   handleSaveOrder: Function,
+  script: Array,
   chapters: Array,
   isChaptersLoading: Boolean,
   handleOpenChapter: Function,
@@ -39,6 +40,7 @@ defineProps({
     <!-- Скрипт -->
     <ScriptData
       v-if="tab.id === 2 && !isChaptersLoading && chapters.length > 0"
+      :script="script"
       :chapters="chapters"
       :handleOpenChapter="handleOpenChapter"
       :handleTextPress="handleTextPress"
