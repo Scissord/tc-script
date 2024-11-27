@@ -72,7 +72,7 @@ const props = defineProps({
       ]"
       @click="handleChangeScript(text)"
     >
-      {{ text.content.length > 30 ? text.content.slice(0, 30) : text.content }}
+      {{ text.content }}
     </p>
   </div>
 </template>

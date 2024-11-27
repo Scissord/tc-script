@@ -21,15 +21,10 @@ const props = defineProps({
   <div class="h-full rounded-lg bg-white w-1/4 border flex flex-col gap-3 px-4 py-4 overflow-y-auto">
     <div class="flex items-center gap-3 w-full">
       <div class="w-full">
-        <!-- <Select
-          :value="good"
-          :options="goods"
-          :onChange="handleChangeGood"
-        /> -->
         <vSelect
           label="good_name"
-          v-model="good.id"
-          :reduce="(option) => option.id"
+          v-model="good.good_id"
+          :reduce="(option) => option.good_id"
           :options="goods"
           placeholder="Выберите..."
         />

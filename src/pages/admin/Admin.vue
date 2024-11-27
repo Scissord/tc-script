@@ -44,9 +44,9 @@ const script = reactive([]);
 const isScriptEditable = ref(false);
 
 const handleChangeGood = async (val) => {
-  const chaptersData = await handleGetChapters(val.id);
+  const chaptersData = await handleGetChapters(val.good_id);
   chapters.splice(0, chapters.length, ...chaptersData);
-  const textsData = await handleGetTexts(val.id);
+  const textsData = await handleGetTexts(val.good_id);
   texts.splice(0, texts.length, ...textsData);
 };
 
@@ -58,18 +58,11 @@ const handleChangeScript = async (val) => {
   } else {
     script.splice(0, script.length, val);
     isScriptEditable.value = true;
-    // script.id = val.id;
-    // script.chapter_id = val.chapter_id;
-    // script.content = val.content;
-    // script.department_id = val.department_id;
-    // script.good_id = val.good_id;
-    // script.queue_order = val.queue_order;
-    // script.answers = [];
   }
 };
 
 const handleAddChapter = () => {
-  if(!good.id) return notification.show('Выберите продукт!', 'error');
+  if(!good.good_id) return notification.show('Выберите продукт!', 'error');
   for(const chapter of chapters) {
     if(!chapter.id) {
       notification.show('Завершите создание предыдущего раздела!', 'error')
@@ -84,7 +77,7 @@ const handleAddChapter = () => {
 
 const handleOpenChapter = (chapter) => {
   chapter.isMenuOpen = !chapter.isMenuOpen
-}
+};
 
 const handleEditChapter = (chapter_id) => {
   const index = chapters.findIndex((c) => c.id === chapter_id);
@@ -144,7 +137,7 @@ const handleAddText = async (chapter_id) => {
     chapter_id,
     content: "",
     department_id: userStore.data.department_id,
-    good_id: good.id,
+    good_id: good.good_id,
     queue_order: currentChapter.texts.length + 1,
     answers: []
   });
@@ -260,7 +253,7 @@ onMounted(async () => {
 })
 
 watch(() => good, (newGood) => {
-  if(newGood.id) {
+  if(newGood.good_id) {
     handleChangeGood(newGood);
   }
 }, { deep: true })

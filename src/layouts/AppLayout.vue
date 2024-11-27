@@ -17,13 +17,6 @@ onMounted(() => {
     router.push('/auth');
   }
 });
-
-watch(() => user.isAuthenticated, (newValue) => {
-  console.log(newValue);
-  if (!newValue) {
-    router.push('/auth');
-  }
-});
 </script>
 
 <template>

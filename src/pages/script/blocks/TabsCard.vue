@@ -8,7 +8,11 @@ defineProps({
   order: Object,
   order_id: [String, Number],
   isOrderLoading: Boolean,
-  handleSaveOrder: Function
+  handleSaveOrder: Function,
+  chapters: Array,
+  isChaptersLoading: Boolean,
+  handleOpenChapter: Function,
+  handleTextPress: Function
 })
 </script>
 
@@ -17,6 +21,7 @@ defineProps({
     <div class="flex items-center justify-center gap-6">
       <div
         v-for="t in tabs"
+        :key="t.id"
         :class='["border-b-2 cursor-pointer select-none hover:text-gray-300 transition-colors duration-300 ease-in-out", tab.id === t.id ? "border-blue-500" : "border-slate-200"]'
         @click="tab.id = t.id"
       >
@@ -30,14 +35,14 @@ defineProps({
       :order_id="order_id"
       :handleSaveOrder="handleSaveOrder"
     />
-    <Loader v-else/>
+    <Loader v-if="tab.id === 1 && isOrderLoading && Object.keys(order).length === 0"/>
     <!-- Скрипт -->
     <ScriptData
-      v-if="tab.id === 2"
+      v-if="tab.id === 2 && !isChaptersLoading && chapters.length > 0"
+      :chapters="chapters"
+      :handleOpenChapter="handleOpenChapter"
+      :handleTextPress="handleTextPress"
     />
-    <!-- Ещё что-то -->
-    <div v-if="tab.id === 3">
-
-    </div>
+    <Loader v-if="tab.id === 2 && isChaptersLoading && chapters.length === 0"/>
   </div>
 </template>

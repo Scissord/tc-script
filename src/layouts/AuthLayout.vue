@@ -1,6 +1,16 @@
 <script setup>
+import { onMounted, watch } from 'vue';
+import { useUserStore } from '@store';
 import { useRouter } from 'vue-router';
+
+const user = useUserStore();
 const router = useRouter();
+
+onMounted(() => {
+  if (user.isAuthenticated) {
+    router.push('/');
+  }
+});
 </script>
 
 <template>

@@ -8,7 +8,7 @@ const appRoutes = {
   component: AppLayout,
   children: [
     { path: '', name: 'Home', component: Home },
-    { path: 'script/:order_id', name: 'Script', component: Script },
+    { path: 'script/:order_id/:good_id', name: 'Script', component: Script },
     { path: 'admin', name: 'Admin', component: Admin }
   ],
 };
