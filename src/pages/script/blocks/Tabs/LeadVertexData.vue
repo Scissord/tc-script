@@ -1,11 +1,7 @@
 <script setup>
+import { ref, watch } from 'vue';
 import { Input, Button } from '@components';
-import vSelect from "vue-select";
-import 'vue-select/dist/vue-select.css';
-defineProps({
-  order: Object,
-  handleSaveOrder: Function
-})
+import { useNotificationStore } from '@store';
 
 const cities = [
   'AKSAI', 'AKTAU', 'AKTOBE', 'ALMATA', 'ASTANA-KURER', 'ATYRAU', 'KARAGANDA', 'KOKSHETAU', 'KOSTANAI', 'KYLSARY',
@@ -29,30 +25,40 @@ const payMethods = [
   'Наличный расчет', 'Kaspi (оплачено)', 'Kaspi Red'
 ];
 
+const props = defineProps({
+  order: Object,
+  order_id: [String, Number],
+  handleSaveOrder: Function
+})
+
+const notification = useNotificationStore();
+
+const isPostIndexValid = ref(true);
+
+const validatePostIndex = () => {
+  isPostIndexValid.value = props.order.postIndex.toString().length >= 5;
+};
+
+const saveOrder = async () => {
+  if(!isPostIndexValid.value) {
+    notification.show('Неверный почтовый индекс!', 'error');
+    return;
+  }
+  await props.handleSaveOrder(props.order_id, props.order);
+};
+
+// watch(() => props.order, (newVal, oldVal) => {
+//   console.log("newVal", newVal);
+//   console.log("oldVal", oldVal);
+// }, { deep: true });
+
+//should be watch to validate order.postIndex
 </script>
 
 <template>
   <div
     class="flex flex-col gap-3 border border-slate-200 rounded-lg p-6 mt-6"
   >
-    <!-- ORDER_ID -->
-    <div class="flex items-center justify-between">
-      <p class="text-sm font-bold">
-        order_id:
-      </p>
-      <p>
-        {{ order.order_id }}
-      </p>
-    </div>
-    <!-- OPERATOR_ID -->
-    <div class="flex items-center justify-between">
-      <p class="text-sm font-bold">
-        operatorID:
-      </p>
-      <p>
-        {{ order.operatorID }}
-      </p>
-    </div>
     <!-- FIO -->
     <div class="flex items-center justify-between">
       <p class="text-sm font-bold">
@@ -63,7 +69,7 @@ const payMethods = [
         type="text"
         v-model="order.fio"
         placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        className="text-md w-1/2 h-8"
       />
     </div>
     <!-- QUANTITY -->
@@ -76,7 +82,7 @@ const payMethods = [
         type="number"
         v-model="order.quantity"
         placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        className="text-md w-1/2 h-8"
       />
     </div>
     <!-- POST INDEX -->
@@ -84,13 +90,23 @@ const payMethods = [
       <p class="text-sm font-bold">
         Почтовый индекс:
       </p>
-      <Input
-        id="order.postIndex"
-        type="number"
-        v-model="order.postIndex"
-        placeholder="Введите..."
-        className="text-md w-1/3 h-8"
-      />
+      <div class="w-1/2 relative flex items-center justify-end">
+        <Input
+          id="order.postIndex"
+          type="number"
+          v-model="order.postIndex"
+          placeholder="Введите..."
+          class="text-md w-full h-8"
+          :onBlur="validatePostIndex"
+        />
+        <div
+          v-if="!isPostIndexValid"
+          class="absolute top-full mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow"
+          style="z-index: 2;"
+        >
+          Введите минимум 5 символов
+        </div>
+      </div>
     </div>
     <!-- CITY -->
     <div class="flex items-center justify-between">
@@ -102,7 +118,7 @@ const payMethods = [
         :reduce="(option) => option"
         :options="cities"
         placeholder="Куда..."
-        class="min-w-[150px] w-fit"
+        class="w-1/2"
       />
     </div>
     <!-- REGION -->
@@ -115,7 +131,7 @@ const payMethods = [
         type="text"
         v-model="order.region"
         placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        className="text-md w-1/2 h-8"
       />
     </div>
     <!-- COMMENT -->
@@ -128,7 +144,7 @@ const payMethods = [
         type="text"
         v-model="order.comment"
         placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        className="text-md w-1/2 h-8"
       />
     </div>
     <!-- ADDRESS -->
@@ -141,7 +157,7 @@ const payMethods = [
         type="text"
         v-model="order.address"
         placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        className="text-md w-1/2 h-8"
       />
     </div>
     <!-- ADDITIONAL1/ДАТА ДОСТАВКИ -->
@@ -149,12 +165,10 @@ const payMethods = [
       <p class="text-sm font-bold">
         Дата доставки:
       </p>
-      <Input
-        id="order.additional1"
-        type="text"
+      <DatePicker
         v-model="order.additional1"
-        placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        auto-apply
+        class="w-1/2"
       />
     </div>
     <!-- ADDITIONAL2/СПОСОБ ДОСТАВКИ -->
@@ -167,33 +181,20 @@ const payMethods = [
         :reduce="(option) => option"
         :options="deliveryMethods"
         placeholder="Как..."
-        class="min-w-[150px] w-fit"
-      />
-    </div>
-    <!-- ADDITIONAL3/ШОТО -->
-    <div class="flex items-center justify-between">
-      <p class="text-sm font-bold">
-        ADDITIONAL3:
-      </p>
-      <vSelect
-        v-model="order.additional3"
-        :reduce="(option) => option"
-        :options="deliveryMethods"
-        placeholder="Как..."
-        class="min-w-[150px] w-fit"
+        class="w-1/2"
       />
     </div>
     <!-- ADDITIONAL4/ПОЛ УОЛКЕР -->
     <div class="flex items-center justify-between">
       <p class="text-sm font-bold">
-        ПОЛ:
+        Гендер:
       </p>
       <vSelect
         v-model="order.additional4"
         :reduce="(option) => option"
         :options="genders"
         placeholder="Выберите..."
-        class="min-w-[150px] w-fit"
+        class="w-1/2"
       />
     </div>
     <!-- ADDITIONAL7/ДОПОЛНИТЕЛЬНЫЙ ТЕЛЕФОН -->
@@ -206,7 +207,7 @@ const payMethods = [
         type="text"
         v-model="order.additional7"
         placeholder="Введите..."
-        className="text-md w-1/3 h-8"
+        className="text-md w-1/2 h-8"
       />
     </div>
     <!-- ADDITIONAL8/ЯЗЫК -->
@@ -219,7 +220,7 @@ const payMethods = [
         :reduce="(option) => option"
         :options="languages"
         placeholder="Выберите..."
-        class="min-w-[150px] w-fit"
+        class="w-1/2"
       />
     </div>
     <!-- ADDITIONAL12/ОПЛАТА -->
@@ -232,15 +233,14 @@ const payMethods = [
         :reduce="(option) => option"
         :options="payMethods"
         placeholder="Выберите..."
-        class="min-w-[150px] w-fit"
+        class="w-1/2"
       />
     </div>
-
     <Button
       type="button"
       text="Сохранить"
       className="rounded-lg w-full bg-blue-500 focus:ring-2 focus:ring-blue-700 focus:ring-offset-2 hover:bg-blue-700"
-      @click="handleSaveOrder(order)"
+      @click="saveOrder"
     />
   </div>
 </template>

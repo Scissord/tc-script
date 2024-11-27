@@ -16,11 +16,22 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fas, far, fab)
 
+// SELECT SHOULD BE HERE
+import vSelect from "vue-select";
+import 'vue-select/dist/vue-select.css';
+// DATE PICKER
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 const app = createApp(App);
 const pinia = createPinia();
 
 // Icon
 app.component('Icon', FontAwesomeIcon)
+//SELECT SHOULD BE HERE
+app.component("vSelect", vSelect);
+// DatePicker
+app.component('DatePicker', VueDatePicker);
 
 app.use(Toast, {
   // Setting the global default position

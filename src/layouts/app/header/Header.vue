@@ -43,7 +43,7 @@ const css = {
           :class="css.logo"
         />
         <router-link
-          to="/script/111111"
+          to="/script/1284255"
           :class="css.link"
         >
           Скрипт

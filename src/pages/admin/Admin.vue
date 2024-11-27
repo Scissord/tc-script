@@ -44,9 +44,6 @@ const script = reactive([]);
 const isScriptEditable = ref(false);
 
 const handleChangeGood = async (val) => {
-  good.id = val.id
-  good.good_id = val.good_id;
-  good.good_name = val.good_name;
   const chaptersData = await handleGetChapters(val.id);
   chapters.splice(0, chapters.length, ...chaptersData);
   const textsData = await handleGetTexts(val.id);
@@ -261,6 +258,12 @@ onMounted(async () => {
   const goodsData = await handleGetGoods();
   goods.splice(0, goods.length, ...goodsData);
 })
+
+watch(() => good, (newGood) => {
+  if(newGood.id) {
+    handleChangeGood(newGood);
+  }
+}, { deep: true })
 
 // watch(() => texts, (newVal, oldVal) => {
 //   console.log("newVal", newVal);

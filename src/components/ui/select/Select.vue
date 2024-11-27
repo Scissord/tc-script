@@ -1,7 +1,5 @@
 <script setup>
-import vSelect from "vue-select";
-import 'vue-select/dist/vue-select.css';
-
+// I THINK I SHOULD MAKE THIS COMPONENT FOR ME AND THAN REGISTER IT IN main.js
 const props = defineProps({
   value: [null, String, Number, Object],
   onChange: Function,

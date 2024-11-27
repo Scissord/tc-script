@@ -3,5 +3,5 @@
 //   : 'http://localhost:8080/api';
 
 // export const baseUrl = 'https://restrain.pw/api';
-const baseUrl = 'http://192.168.0.119:8000';
+const baseUrl = 'http://192.168.0.107:8000';
 export default baseUrl;

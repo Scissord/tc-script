@@ -21,20 +21,29 @@ const useOrderApi = () => {
     }
   };
 
-  const saveOrder = async (order) => {
-    console.log(order)
-    // try {
-    //   const response = await axios({
-    //     method: 'PATCH',
-    //     url: `${baseUrl}/save_order/${order_id}`,
-    //     headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
-    //     withCredentials: true,
-    //   })
+  const saveOrder = async (order_id, data) => {
+    if(data.additional1) {
+      const parsedDate = new Date(data.additional1);
+      const year = parsedDate.getFullYear();
+      const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(parsedDate.getDate()).padStart(2, '0');
+      data.additional1 = `${year}-${month}-${day}`;
+    }
 
-    //   return response.data;
-    // } catch (err) {
-    //   handleError(err.message);
-    // }
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${baseUrl}/update_order/${order_id}`,
+        headers: { 'Authorization': `Bearer ${userStore.accessToken}` },
+        withCredentials: true,
+        data
+      })
+      notification.show('Заказ успешно обновлён!', 'success');
+
+      return response.data;
+    } catch (err) {
+      handleError(err.message);
+    }
   };
 
   const handleError = (error) => {

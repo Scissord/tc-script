@@ -10,8 +10,8 @@ const useOrder = () => {
     return order;
   }
 
-  const handleSaveOrder = async (order) => {
-    await saveOrder(order);
+  const handleSaveOrder = async (order_id, order) => {
+    await saveOrder(order_id, order);
   };
 
   return {

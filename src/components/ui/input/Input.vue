@@ -28,6 +28,10 @@ defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  onBlur: {
+    type: Function,
+    required: false
   }
 });
 
@@ -43,10 +47,11 @@ const onInput = (event) => {
     :id="id"
     :type="type"
     :value="modelValue"
-    @input="onInput($event)"
     :class="['input', className]"
     :placeholder="placeholder"
     :required="required"
+    @input="onInput($event)"
+    @blur="onBlur"
   />
 </template>
 
