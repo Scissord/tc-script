@@ -74,7 +74,7 @@ onMounted(async () => {
 // open chapter
 const handleOpenChapter = (chapter) => {
   chapter.isMenuOpen = !chapter.isMenuOpen
-}
+};
 // press on text
 const handleTextPress = async (val) => {
   const data = await handleGetScript(val.id);
@@ -86,6 +86,10 @@ const handlePressAnswer = async (val) => {
   const data = await handleGetScript(val.next_text_id);
   script.splice(0, script.length, ...data);
 };
+
+watch(() => chapters, (newVal) => {
+  console.log(newVal)
+}, { deep: true });
 </script>
 
 <template>

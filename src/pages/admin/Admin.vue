@@ -76,6 +76,7 @@ const handleAddChapter = () => {
 };
 
 const handleOpenChapter = (chapter) => {
+  if(!chapter.id) return;
   chapter.isMenuOpen = !chapter.isMenuOpen
 };
 
@@ -96,7 +97,7 @@ const handleSaveChapterName = async (chapter) => {
   } else {
     data = await handleUpdateChapter(chapter.id, chapter.name);
   }
-}
+};
 
 const handleDestroyChapter = async (chapter_id) => {
   const confirm = window.confirm('Вы уверены?')
@@ -119,18 +120,21 @@ const handleDestroyChapter = async (chapter_id) => {
 };
 
 const handleAddText = async (chapter_id) => {
-  // const data = await handleCreateText(chapter_id);
   const currentChapter = chapters.find((c) => c.id === chapter_id);
 
   // validate should be in service;
   for(const chapter of chapters) {
-    for(const text of chapter.texts) {
-      if(!text.id) {
-        notification.show('Завершите создание предыдущего подраздела!', 'error')
-        return;
+    if (chapter.texts && Array.isArray(chapter.texts)) {
+      for(const text of chapter.texts) {
+        if(!text.id) {
+          notification.show('Завершите создание предыдущего подраздела!', 'error')
+          return;
+        };
       };
     };
   };
+
+  currentChapter.texts = currentChapter.texts || [];
 
   currentChapter.texts.push({
     id: null,
@@ -139,7 +143,7 @@ const handleAddText = async (chapter_id) => {
     department_id: userStore.data.department_id,
     good_id: good.good_id,
     queue_order: currentChapter.texts.length + 1,
-    answers: []
+    answers: [],
   });
 };
 
@@ -167,10 +171,11 @@ const handleSaveTextName = async (val) => {
       good_id: val.good_id,
       chapter_id: val.chapter_id
     });
-
-    data.answers = val.answers;
   }
 
+  texts.push(data);
+
+  data.answers = val.answers;
   const currentChapter = chapters.find((c) => c.id === val.chapter_id);
 
   if (currentChapter) {
@@ -230,6 +235,8 @@ const handleSaveAnswer = async (answer) => {
       next_text_id: answer.next_text_id,
       text_id: script[0].id
     });
+    const currentAnswer = script[0].answers.find((a) => a.id === answer.id)
+    currentAnswer.id = data.id;
   } else {
     data = await handleUpdateAnswer(answer.id, {
       content: answer.content,

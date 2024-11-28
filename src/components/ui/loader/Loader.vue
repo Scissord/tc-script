@@ -3,7 +3,7 @@
 
 <template>
   <div class="w-full h-full flex items-center justify-center">
-    <span className="loading loading-spinner loading-lg text-primary">
+    <span className="">
       loading...
     </span>
   </div>

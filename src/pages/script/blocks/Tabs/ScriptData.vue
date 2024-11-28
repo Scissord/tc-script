@@ -1,4 +1,6 @@
 <script setup>
+import { watch } from 'vue';
+
 defineProps({
   script: Array,
   chapters: Array,
@@ -29,7 +31,7 @@ defineProps({
         <p
           :class="[
             'whitespace-nowrap px-4 py-2 rounded-lg transition-colors duration-300 ease-in-out cursor-pointer overflow-hidden text-sm select-none hover:bg-gray-200 h-10 flex items-center',
-            script[0].id === text.id ? 'bg-gray-300' : '',
+            script.length > 0 && script[0].id === text.id ? 'bg-gray-300' : '',
 
           ]"
           @click="handleTextPress(text)"

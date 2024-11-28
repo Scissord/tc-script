@@ -45,8 +45,8 @@ const props = defineProps({
     >
       <Input
         :id="answer.id"
-        type="text"
         v-model="answer.content"
+        type="text"
         placeholder="Название ответа..."
         className="text-md w-[200px]"
       />
